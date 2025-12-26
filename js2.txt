@@ -1,0 +1,38 @@
+const currencyList = [
+  "USD","INR","EUR","GBP","JPY","AUD","CAD","CHF","CNY","NZD",
+  "SGD","HKD","KRW","ZAR","BRL","MXN","RUB","SEK","NOK","DKK",
+  "PLN","TRY","ILS","AED","SAR","QAR","KWD","OMR","THB","MYR",
+  "IDR","PHP","VND","BDT","LKR","PKR","NPR","EGP","NGN","KES",
+  "GHS","UGX","TZS","MAD","DZD","TND","CZK","HUF","RON"
+];
+
+const from = document.getElementById("from");
+const to = document.getElementById("to");
+
+currencyList.forEach(cur => {
+    from.innerHTML += `<option value="${cur}">${cur}</option>`;
+    to.innerHTML += `<option value="${cur}">${cur}</option>`;
+});
+
+from.value = "USD";
+to.value = "INR";
+
+async function convert() {
+    const amount = document.getElementById("amount").value;
+    const fromCur = from.value;
+    const toCur = to.value;
+
+    const res = await fetch(`https://api.exchangerate-api.com/v4/latest/${fromCur}`);
+    const data = await res.json();
+    const rate = data.rates[toCur];
+
+    document.getElementById("result").innerText =
+        `${amount} ${fromCur} = ${(amount * rate).toFixed(2)} ${toCur}`;
+}
+
+function swap() {
+    let temp = from.value;
+    from.value = to.value;
+    to.value = temp;
+    convert();
+}
